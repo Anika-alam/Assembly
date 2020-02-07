@@ -1,0 +1,25 @@
+
+; You may customize this and other start-up templates; 
+; The location of this template is c:\emu8086\inc\0_com_template.txt  
+
+
+;Ques:reverse bit pattern
+org 100h
+
+mov al, 11011100b
+xor bl,bl        
+xor cx,cx 
+mov cx,8 ;8bit er jnno count korbe
+
+TOP:
+ shr al,1
+ rcl bl,1  
+ LOOP TOP
+
+mov al,bl
+
+ret
+
+
+
+

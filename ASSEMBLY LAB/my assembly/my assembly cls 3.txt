@@ -1,0 +1,52 @@
+
+; You may customize this and other start-up templates; 
+; The location of this template is c:\emu8086\inc\0_com_template.txt
+
+org 100h
+
+mov ax,11 ;ax=10 
+mov bx,2  ;bx=2 
+
+cmp ax,0
+
+je label1   ;ax==0
+jg label2   ;ax>0
+jl label3   ;ax<0
+
+label1:
+mov cx,ax  ;c=a
+add cx,bx  ;c=a+b
+jmp end     ;sesh
+
+label3:
+mov cx,bx   ;cx=bx
+add cx,cx  ;cx=2bx    
+add cx,ax   ;cx= ax+2bx
+jmp end
+
+label2:
+mov cx,ax  ;c=a
+sub cx,bx  ;c=a-b
+cmp ax,11   ;cmp 11
+jge label5   ;ax>11
+jne end      ;sesh
+
+label5:
+cmp ax,15       ;check ax<=15
+jle label4      ;if ax<=15
+jne end
+
+label4:
+mov cx,ax    ;cx=ax
+add cx,cx     ;c=2a
+sub cx,bx     ;c=2a-b
+end:
+
+
+
+
+ret
+
+
+
+

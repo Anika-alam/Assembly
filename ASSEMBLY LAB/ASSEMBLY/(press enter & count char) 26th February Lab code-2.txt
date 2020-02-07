@@ -1,0 +1,48 @@
+.MODEL SMALL
+.STACK 64
+.DATA
+        STRING DB ? 
+        SYM DB '$'
+       
+.CODE      
+MAIN PROC 
+    
+    
+        MOV AX,@DATA     
+        MOV DS,AX
+
+        mov bl,-1
+
+INP:    MOV AH,01
+        INT 21H
+
+        INC bl
+
+        CMP AL,0DH
+        JNZ INP
+        
+        mov dl,0ah
+        mov ah,02
+        int 21h
+        
+        mov dl,0dh
+        int 21h
+         mov dl,bl
+         add dl,48
+        int 21h
+        
+        
+        MOV [SI],'$'
+        MOV DX,SI
+        MOV AH,02
+        INT 21H
+
+        MOV AH,4CH
+        INT 21H
+        
+        
+         
+        
+endp
+
+ret

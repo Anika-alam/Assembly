@@ -1,0 +1,97 @@
+.MODEL SMALL
+ORG 100H
+.STACK 100H
+.DATA
+   
+   
+VAR1 DB 10
+NUM DW 0  
+TEMP DB ? 
+TEMP1 DB ?
+TEMP2 DB ? 
+          
+          
+.CODE
+PROC MAIN
+  
+ 
+L:
+ 
+ MOV AH,01
+ INT 21H 
+   
+ 
+ CMP AL,0DH 
+ JE OUTPUT
+         
+ SUB AL,30H  
+ 
+ MOV TEMP,AL
+ MOV AX,NUM
+ 
+ MUL VAR1
+ ADD AL,TEMP
+ MOV NUM,AX
+ JMP L
+             
+                         
+ OUTPUT:
+
+ MOV AH,2
+ MOV DX,0AH
+ INT 21H
+ 
+ MOV AH,2
+ MOV DX,0DH
+ INT 21H
+ 
+ 
+ 
+ XOR BX,BX
+ XOR AX,AX
+ PUSH 0 
+       
+       
+L1: 
+ 
+ MOV AX,NUM
+ DIV VAR1 
+ 
+ MOV TEMP1,AL
+ MOV TEMP2,AH
+ XOR AX,AX
+ 
+ CMP TEMP2,0
+ JE EXIT
+  
+  
+ MOV DL,TEMP2      
+ ADD DL,48
+ PUSH DX 
+ 
+ 
+ 
+ MOV BL,TEMP1
+ 
+ MOV NUM,BX
+ 
+ XOR BX,BX
+ XOR AX,AX
+  
+  
+  CMP TEMP2,0
+  JNE L1
+  
+ 
+EXIT:
+ 
+  POP DX
+  MOV AH,02
+  INT 21H
+  
+  CMP DX,0
+  JNE EXIT
+  
+
+ENDP
+RET

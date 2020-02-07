@@ -1,0 +1,212 @@
+.MODEL SMALL 
+org 100h
+ .STACK 100H
+
+ .DATA
+   msg1:  DB  'Enter a string : $'
+   msg2:  DB  0DH,0AH,'No. of Vowels = $'
+   msg3:  DB  0DH,0AH,'No. of Consonants = $'
+
+   array:       DB  50 DUP (?)   
+   Capital_VOWELS:      DB  'AEIOU'
+   Small_VOWELS:      DB  'aeiou'
+   Capital_CONSONANTS:  DB  'BCDFGHJKLMNPQRSTVWXYZ'
+   Small_CONSONANTS:  DB  'bcdfghjklmnpqrstvwxyz'
+ 
+ .CODE
+   MAIN PROC
+     mov DX, msg1            
+     MOV AH, 9
+     INT 21H
+
+     mov DI, array              
+
+     CALL READ_LINE                
+
+     XOR DX, DX                   
+     mov SI, array               
+
+     OR BX, BX                   
+     JE EXIT                     
+
+     COUNT:                      
+       LODSB                      
+
+       mov DI, Capital_VOWELS           
+       MOV CX, 5                  
+
+       REPNE SCASB                
+       JE INCREMENT_VOWELS       
+                                 
+
+       mov DI, Small_VOWELS           
+       MOV CX, 5                  
+
+       REPNE SCASB                
+       JE INCREMENT_VOWELS     
+                                 
+                                   
+       mov DI, Capital_CONSONANTS      
+                                 
+       MOV CX, 21                 
+
+       REPNE SCASB                
+       JE INCREMENT_CONSONANTS   
+                                 
+
+       mov DI, Small_CONSONANTS     
+                               
+       MOV CX, 21                 
+
+       REPNE SCASB                
+       JE INCREMENT_CONSONANTS   
+                                
+
+       JMP NEXT                  
+
+       INCREMENT_VOWELS:       
+         INC DL                   
+         JMP NEXT               
+
+       INCREMENT_CONSONANTS:    
+         INC DH                   
+
+       NEXT:                  
+         DEC BX                  
+         JNE COUNT             
+
+       EXIT:                  
+
+     MOV CX, DX                  
+
+     mov DX, msg2             
+     MOV AH, 9                     
+     INT 21H                       
+
+     XOR AX, AX                 
+     MOV AL, CL                   
+
+     CALL OUTDEC                  
+
+     mov DX, msg3             
+     MOV AH, 9
+     INT 21H
+
+     XOR AX, AX                  
+     MOV AL, CH                   
+
+     CALL OUTDEC                
+
+     MOV AH, 4CH                  
+     INT 21H
+   MAIN ENDP
+                                                 
+
+  READ_LINE PROC
+
+    PUSH AX                     
+    PUSH DI                       
+
+    CLD                        
+    XOR BX, BX                    
+
+    INPUT_LOOP:                
+      MOV AH, 1                 
+      INT 21H                    
+
+      CMP AL, 0DH                
+      JE END_INPUT              
+
+      CMP AL, 08H                
+      JNE NOT_BACKSPACE         
+
+      CMP BX, 0                 
+      JE INPUT_ERROR             
+
+      MOV AH, 2                   
+      MOV DL, 20H              
+      INT 21H                    
+
+      MOV DL, 08H                 
+      INT 21H                   
+
+      DEC BX                      
+      DEC DI                      
+      JMP INPUT_LOOP            
+
+      INPUT_ERROR:               
+      MOV AH, 2                   
+      MOV DL, 07H                
+      INT 21H                    
+
+      MOV DL, 20H                 
+      INT 21H                   
+      JMP INPUT_LOOP                   
+
+      NOT_BACKSPACE:            
+      STOSB                       
+      INC BX                   
+      JMP INPUT_LOOP            
+
+    END_INPUT:                  
+
+    POP DI                        
+    POP AX                        
+ 
+    RET
+  READ_LINE ENDP
+
+
+ OUTDEC PROC
+  
+
+   PUSH BX                       
+   PUSH CX                        
+   PUSH DX                       
+
+   CMP AX, 0                    
+   JGE START                     
+
+   PUSH AX                       
+
+   MOV AH, 2                      
+   MOV DL, "-"                   
+   INT 21H                        
+
+   POP AX                         
+
+   NEG AX                         
+
+   START:                        
+
+   XOR CX, CX                     
+   MOV BX, 10                     
+
+   OUTPUT:                       
+     XOR DX, DX                   
+     DIV BX                       
+     PUSH DX                      
+     INC CX                       
+     OR AX, AX                    
+   JNE OUTPUT                    
+
+   MOV AH, 2                      
+
+   DISPLAY:                      
+     POP DX                       
+     OR DL, 30H                   
+     INT 21H                      
+   LOOP DISPLAY                  
+
+   POP DX                         
+   POP CX                         
+   POP BX                       
+
+   RET                            
+ OUTDEC ENDP
+
+
+
+ END MAIN
+
+

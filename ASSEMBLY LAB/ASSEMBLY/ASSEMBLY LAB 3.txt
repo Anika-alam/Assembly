@@ -1,0 +1,160 @@
+1.
+
+  .MODEL SMALL 
+  .STACK 100H
+  .DATA
+  .CODE
+  
+  MAIN PROC
+    
+    JMP ELSE 
+    
+    IF:
+    
+    MOV AH,2
+    MOV DL,'*'
+    INT 21H
+    
+    
+    ELSE:
+    
+    MOV AH,2
+    MOV DL,'#'
+    INT 21H
+    
+   
+   
+    MAIN ENDP
+  END MAIN
+
+
+
+
+
+
+
+2.
+
+
+
+.MODEL SMALL 
+.STACK 100H
+.DATA  
+.CODE   
+
+MAIN PROC
+ 
+  MOV AH,1
+  INT 21H
+  MOV BL,AL
+  
+  CMP BL,'1'
+  JZ J1
+    
+  
+  CMP BL,'2'
+  JZ J2 
+  
+  
+  J1:
+  MOV AH,2
+  MOV DL,'*'
+  INT 21H
+  JZ EXIT
+  
+  J2:
+  MOV AH,2
+  MOV DL,'#'
+  INT 21H  
+  
+  JZ EXIT
+  
+  EXIT:
+  
+ENDP  
+END MAIN
+
+
+
+
+
+3.
+
+
+.MODEL SMALL 
+.STACK 100H
+.DATA  
+.CODE   
+
+MAIN PROC
+           
+  MOV CX,128
+  MOV BL,0         
+ 
+  
+  
+  J1:
+  MOV AH,2  
+  MOV DL,BL
+  
+  INT 21H
+  INC BL 
+  
+  MOV AH,2
+  MOV DL,0AH
+  INT 21H
+  
+  MOV AH,2
+  MOV DL,0AH
+  INT 21H
+  LOOP J1
+  
+  
+  
+ENDP  
+END MAIN
+
+
+
+
+4.
+
+
+.MODEL SMALL 
+.STACK 100H
+.DATA     
+.CODE   
+        
+  MAIN PROC
+ 
+ 
+ MOV BL,-4
+ 
+ CMP BL,0
+ JGE J
+ 
+ NEG BL
+ ADD BL,48
+ 
+ MOV AH,2
+ MOV DL,BL
+ INT 21H
+ 
+ JMP EXIT
+ 
+ J:
+ 
+ MOV AH,2
+ MOV DL,BL
+ ADD DL,48
+ INT 21H
+ 
+ EXIT:
+ 
+ 
+ENDP  
+END MAIN
+
+
+
+

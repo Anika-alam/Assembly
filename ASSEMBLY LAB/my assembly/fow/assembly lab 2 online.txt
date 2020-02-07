@@ -1,0 +1,45 @@
+problem:A=2(A-B)+(4(3A-2D)-6B)
+
+org 100h
+
+mov ah,3
+mov bh,1
+mov dh,5 
+       
+;calculate 2d
+add dh,dh   
+;store cx=ax
+mov ch,ah  
+;calculate 3a
+add ah,ah
+add ah,ch
+;3a-2d
+sub ah,dh
+;4(3a-2d)
+mov dh,0
+add dh,ah
+add dh,ah
+add dh,ah
+add dh,ah
+;bl=6b
+mov bl,0 
+add bl,bh  
+add bl,bh
+add bl,bh
+add bl,bh
+add bl,bh
+add bl,bh
+;4(3a-2d)-6b
+sub dh,bl
+;a-b
+sub ch,bh
+;2(a-b)
+add ch,ch
+;2(a-b)+4(3a-2d)-6b
+add ch,dh
+
+ret
+
+
+
+

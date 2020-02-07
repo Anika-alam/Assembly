@@ -1,0 +1,56 @@
+problem:
+  if(ax==0)c=a+b
+if(ax>0)c=a-b
+if(ax<0)c=a+2b
+if(ax>=11 && ax <= 15)c=2a-b
+
+
+org 100h
+
+; add your code here 
+ 
+mov ax,13
+mov bx,2
+
+cmp ax,0
+je label1  ;if(ax==0)
+jg label2  ;if(ax>0)
+jl label3  ;if(ax<0)
+
+label1:
+mov cx,ax  ;c=a
+add cx,bx  ;c=c+b
+jmp end    ;done and exit
+
+label3:
+mov cx,bx  ;c=b
+add cx,cx  ;c=2b
+add cx,ax  ;c=a+2b
+jmp end    ;done and exit
+
+label2:
+mov cx,ax  ;c=a
+sub cx,bx  ;c=a+b
+cmp ax,11  ;for checking (ax>=11)
+
+jge label5 ;if( ax>=11)
+jne end    ;done and exit
+
+label5:
+cmp ax,15  ;for checking (ax<=15)
+jle label4 ;if(ax<=15)
+jne end    ;done and exit
+
+label4:
+mov cx,ax  ;c=a
+add cx,cx  ;c=2a
+sub cx,bx  ;c=2a-b
+end:       ;done and exit
+
+
+
+ret
+
+
+
+

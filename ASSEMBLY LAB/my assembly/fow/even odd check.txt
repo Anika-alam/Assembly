@@ -1,0 +1,23 @@
+problem :ax = any digit
+bx= 1,if even
+bx =0;if odd
+
+
+org 100h
+
+mov ax,8
+xor bx,bx
+and ax,1
+//test ax,1
+jz even
+jmp end
+even:
+mov bx,1
+end:
+
+
+ret
+
+
+
+

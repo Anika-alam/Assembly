@@ -1,0 +1,191 @@
+19.1
+
+.MODEL SMALL
+ORG 100H
+.STACK 100H
+.DATA
+.CODE
+PROC MAIN
+ 
+ mov ah,01
+ int 21h 
+ sub al,30h
+ mov cl,al
+ 
+ mov bl,1 
+
+ mov ah,02
+ mov dl,0ah
+ int 21h
+    
+ mov dl,0dh
+ int 21h
+
+ 
+
+  
+ L: 
+    mov bh,cl
+    
+    mov cl,0
+    mov cl,bl
+    L1:
+    mov ah,02
+    mov dl,'*'
+    int 21h  
+    
+    loop L1  
+    inc bl
+    
+
+    mov dl,0ah
+    int 21h
+    
+    mov dl,0dh
+    int 21h 
+     
+    mov cl,bh  
+    loop L 
+    
+    exit:
+
+ENDP
+RET
+
+
+
+
+
+
+
+
+19.2
+
+
+
+.MODEL SMALL
+.STACK 100H
+.DATA 
+
+V1 DW 1
+V2 DW 5
+V3 DW 1 
+V4 DW ? 
+
+.CODE
+
+MAIN PROC
+    MOV AX,@DATA
+    MOV DS,AX
+    MOV CX,3
+       
+    OL:
+    MOV AH,2
+    MOV DL,0DH
+    INT 21H
+    MOV DL,0AH
+    INT 21H  
+    
+    MOV V1,CX
+    XOR CX,CX
+    MOV CL,1
+    
+    IL:
+     MOV DL,' '
+     MOV AH,2
+     INT 21H
+          
+     MOV V4,CX
+     XOR CX,CX
+     MOV CX,V3
+    
+   IL2:
+     MOV DL,0 
+     MOV AH,2
+     INT 21H
+         
+     LOOP IL2  
+           
+     INC V3
+     MOV CX,V4       
+     LOOP IL
+     MOV CX,V2
+    
+   IL1:
+     MOV DL,'*'
+     MOV AH, 2
+     INT 21H  
+     LOOP IL1 
+     SUB V2,2
+     XOR CX,CX
+     MOV CX,V1 
+     INC V1
+     LOOP OL 
+     MOV CX,V2
+   
+    
+     MOV AH,4CH
+     INT 21H 
+      
+
+    MAIN ENDP
+END MAIN
+
+
+
+
+19.3
+
+
+.MODEL SMALL
+ORG 100H
+.STACK 100H
+.DATA
+.CODE
+PROC MAIN
+ 
+ MOV AH,01
+ INT 21H 
+ SUB AL,30H
+ MOV CL,AL
+ 
+ MOV BL,1 
+
+ MOV AH,02
+ MOV DL,0AH
+ INT 21H
+    
+ MOV DL,0DH
+ INT 21H
+
+ 
+
+  
+ L: 
+    MOV BH,CL
+    
+    MOV CL,0
+    MOV CL,BL
+    L1:
+    MOV AH,02
+    MOV DL,bl
+    add dl,48
+    INT 21H  
+    
+    LOOP L1  
+    INC BL
+    
+
+    MOV DL,0AH
+    INT 21H
+    
+    MOV DL,0DH
+    INT 21H 
+     
+    MOV CL,BH  
+    LOOP L 
+    
+    EXIT:
+
+ENDP
+RET

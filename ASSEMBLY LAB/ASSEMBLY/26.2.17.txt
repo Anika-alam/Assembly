@@ -1,0 +1,183 @@
+******** REVERSE BINARY NUMBER
+
+
+
+.MODEL SMALL
+ .STACK 100H
+
+ .DATA
+   PROMPT_1  DB  'Enter the binary number (max 16-bit) : $'
+   PROMPT_2  DB  0DH,0AH,'The given binary number (16-bit) is : $'
+
+ .CODE
+   MAIN PROC
+     MOV AX, @DATA                ; initialize DS  
+     MOV DS, AX
+
+     LEA DX, PROMPT_1             ; load and display PROMPT_1   
+     MOV AH, 9
+     INT 21H
+
+     XOR BX, BX                   ; clear BX 
+     MOV CX, 16                   ; initialize loop counter
+     MOV AH, 1                    ; set input function
+
+     @INPUT:                      ; jump label
+       INT 21H                    ; read a digit
+       CMP AL, 0DH                ; compare digit with carriage return 
+       JE @END                    ; jump to label @END if carriage return
+       AND AL, 0FH                ; convert ascii to decimal code
+       SHL BX, 1                  ; rotate BX to left by 1 bit
+       OR BL, AL                  ; set the LSB of BX with input
+     LOOP @INPUT                  ; jump to label @INPUT
+
+     @END:                        ; jump label
+
+     LEA DX, PROMPT_2             ; load and display PROMPT_2   
+     MOV AH, 9
+     INT 21H
+
+     MOV CX, 16                   ; initialize loop counter
+     MOV AH, 2                    ; set output function
+
+     @OUTPUT:                     ; jump label
+       SHL BX, 1                  ; shift left BX by 1 bit
+
+       JNC @ZERO                  ; jump to label @ZERO if CF=0
+         MOV DL, 31H              ; set DL=1
+         JMP @DISPLAY             ; jump to label @DISPLAY
+
+       @ZERO:                     ; jump label
+         MOV DL, 30H              ; set DL=0
+
+       @DISPLAY:                  ; jump label
+         INT 21H                  ; display digit
+     LOOP @OUTPUT                 ; jump to label @OUTPUT
+
+     MOV AH, 4CH                  ; return control to DOS
+     INT 21H
+   MAIN ENDP
+ END MAIN
+
+
+
+
+
+
+
+
+
+
+
+1.ODD EVEN DETECTION USING TEST INSTRUCTION
+
+
+
+.MODEL SMALL 
+ORG 100H
+.STACK 100H
+.DATA
+MSG1: DW 'Even',24h
+MSG2: DW 'Odd',24h 
+.CODE
+MAIN PROC
+ 
+ MOV AH,1
+ INT 21H
+ MOV BL,AL
+ 
+MOV BH,1
+ 
+ TEST BL,BH
+ JZ L1
+  
+JMP L2
+ 
+ 
+ L1:
+ MOV DX,MSG1
+ MOV AH,9
+ INT 21H
+ JMP EXIT
+ 
+ L2:
+ MOV DX,MSG2
+ MOV AH,9
+ INT 21H
+ JMP EXIT
+       
+   Exit:     
+
+END PROC
+    RET
+
+
+
+
+
+
+
+3.BINARY AS INPUT AS OUTPUT
+
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+ 
+.CODE
+
+MAIN PROC
+ 
+    MOV BX,0
+    MOV CL,1
+ 
+    TOP:
+       MOV AH,1
+       INT 21H
+     
+       CMP AL,0DH
+       JE END_
+     
+       SUB AL,30H
+     
+       SHL BX,CL
+       OR BL,AL
+
+       JMP TOP
+     
+    END_:  
+ 
+    MOV AH,2
+    MOV DL,0AH
+    INT 21H
+    MOV DL,0DH
+    INT 21H
+ 
+    MOV CL,1
+    MOV CH,0
+    OUTPUT:
+          CMP CH,16
+          JE FINISH
+          INC CH
+          SHL BX,CL
+          JC ONE
+       
+       
+          MOV AH,2
+          MOV DL,30H
+          INT 21H
+          JMP OUTPUT
+       
+    ONE:
+        MOV AH,2
+        MOV DL,31H
+        INT 21H
+        JMP OUTPUT
+ 
+    FINISH:  
+    MOV AH,4CH
+    INT 21H
+           
+   
+    MAIN ENDP
+END MAIN

@@ -1,0 +1,169 @@
+.MODEL SMALL
+.STACK 100H  
+
+.DATA   
+STR1 DB  100 DUP(?)
+STR2 DB  100 DUP(?)
+STR3 DB  100 DUP(?)
+LEN1 DW ?
+LEN2 DW ?  
+  
+.CODE
+    
+    
+    
+
+READ_STR PROC
+    PUSH AX
+    PUSH DI
+   
+    CLD         ;PROCESS FROM LEFT TO RIGHT
+    XOR BX,BX   ;NUMBER OF CHARACTER READ
+    
+    MOV AH,1
+    INT 21H    
+WHILE1:
+    CMP AL,0DH   ;CR?
+    JE READ_END
+    
+    CMP AL,8H    ;BACKSPACE?
+    JNE ELSE1
+    DEC DI       ;MOV STR POINTER BACK
+    DEC BX
+    JMP READ_
+ELSE1:
+    STOSB       ;STORE CHAR OF AL IN STR AND INCREMENTS DI
+    INC BX      ;INCREMENT COUNT
+READ_:
+    INT 21H
+    JMP WHILE1
+
+READ_END:
+    POP DI
+    POP AX
+    RET
+READ_STR ENDP
+
+
+
+
+
+DISPLAY_STR PROC
+    PUSH AX
+    PUSH BX
+    PUSH CX
+    PUSH DX
+    PUSH SI
+    
+    MOV CX,BX			;NO. OF CHARS
+    JCXZ DISPLAY_END    ;EXIT IF CX IS 0
+    
+    CLD
+    MOV AH,2
+TOP:
+    LODSB			;CHAR IN AL
+    MOV DL,AL
+    INT 21H
+    LOOP TOP
+
+DISPLAY_END:
+    POP SI
+    POP DX
+    POP CX
+    POP BX
+    POP AX
+    RET
+DISPLAY_STR ENDP
+
+
+
+
+
+MAIN PROC
+    MOV AX,@DATA
+    MOV DS, AX  
+    MOV ES, AX
+    
+    
+    ;INPUT 2 STRING
+    
+    LEA DI,STR1
+    CALL READ_STR
+    MOV LEN1,BX
+    
+    MOV AH,2
+    MOV DL, 10
+    INT 21H
+    MOV DL, 0DH
+    INT 21H
+                
+    LEA DI,STR2
+    CALL READ_STR
+    MOV LEN2,BX
+    
+    MOV AH,2
+    MOV DL, 10
+    INT 21H
+    MOV DL, 0DH
+    INT 21H
+    
+    
+    
+    ;COMPAIR THEM
+    
+    LEA SI, STR1    
+    LEA DI, STR2
+
+    CMPSB
+    JG STRING_2
+    JMP STRING_1
+      
+                     
+    STRING_1:
+        LEA SI, STR1    
+        LEA DI, STR3
+        MOV CX, LEN1
+        REP MOVSB
+        
+        MOV AL,' '
+        STOSB
+        
+        LEA SI, STR2
+        MOV CX, LEN2   
+        REP MOVSB
+        JMP PRINT
+    
+    STRING_2:
+        LEA SI, STR2    
+        LEA DI, STR3
+        MOV CX,LEN2
+        REP MOVSB 
+        
+        MOV AL,' '
+        STOSB
+        
+        LEA SI, STR1
+        MOV CX,LEN1    
+        REP MOVSB
+        JMP PRINT
+    
+    
+    PRINT:
+        LEA SI,STR3
+        MOV BX, LEN1
+        ADD BX, LEN2
+        inc bx
+        CALL DISPLAY_STR
+        
+        MOV AH,2
+        MOV DL, 10
+        INT 21H
+        MOV DL, 0DH
+        INT 21H
+    
+    EXIT:  
+    
+MOV AH,4CH
+INT 21H
+MAIN ENDP 
+END MAIN
